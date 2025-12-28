@@ -45,7 +45,7 @@ class TaskB:
     def __init__(self, dataset_path):
         self.dataset_path = dataset_path
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        self.EPOCHS = 10
+        self.EPOCHS = 20
         self.BATCH_SIZE = 64
         self.LR = 0.001
         self.model = self.build_model().to(self.device)
