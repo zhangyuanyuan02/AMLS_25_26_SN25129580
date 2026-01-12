@@ -1,0 +1,68 @@
+
+==============================
+Running Task A Experiments (SVM)
+==============================
+
+Experiment: C=0.1, feature_mode=raw, augmentation=False
+  Test Metrics: Acc=0.7308, P=0.7308, R=1.0000, F1=0.8444
+
+Experiment: C=0.1, feature_mode=raw, augmentation=True
+  Test Metrics: Acc=0.7308, P=0.7308, R=1.0000, F1=0.8444
+
+Experiment: C=0.1, feature_mode=processed, augmentation=False
+  Test Metrics: Acc=0.7308, P=0.7308, R=1.0000, F1=0.8444
+
+Experiment: C=0.1, feature_mode=processed, augmentation=True
+  Test Metrics: Acc=0.7436, P=0.7403, R=1.0000, F1=0.8507
+
+Experiment: C=1.0, feature_mode=raw, augmentation=False
+  Test Metrics: Acc=0.7949, P=0.7847, R=0.9912, F1=0.8760
+
+Experiment: C=1.0, feature_mode=raw, augmentation=True
+  Test Metrics: Acc=0.7949, P=0.7929, R=0.9737, F1=0.8740
+
+Experiment: C=1.0, feature_mode=processed, augmentation=False
+  Test Metrics: Acc=0.7949, P=0.7847, R=0.9912, F1=0.8760
+
+Experiment: C=1.0, feature_mode=processed, augmentation=True
+  Test Metrics: Acc=0.7885, P=0.7956, R=0.9561, F1=0.8685
+
+Experiment: C=10.0, feature_mode=raw, augmentation=False
+  Test Metrics: Acc=0.7949, P=0.8475, R=0.8772, F1=0.8621
+
+Experiment: C=10.0, feature_mode=raw, augmentation=True
+  Test Metrics: Acc=0.7628, P=0.8291, R=0.8509, F1=0.8398
+
+Experiment: C=10.0, feature_mode=processed, augmentation=False
+  Test Metrics: Acc=0.7756, P=0.8319, R=0.8684, F1=0.8498
+
+Experiment: C=10.0, feature_mode=processed, augmentation=True
+  Test Metrics: Acc=0.7628, P=0.8182, R=0.8684, F1=0.8426
+
+==============================
+Running Task B Experiments (CNN)
+==============================
+
+Experiment: lr=0.001, base_channels=8, augmentation=False, epochs=20
+  Test Metrics: Acc=0.8782, P=0.8800, R=0.9649, F1=0.9205
+
+Experiment: lr=0.001, base_channels=8, augmentation=True, epochs=20
+  Test Metrics: Acc=0.8333, P=0.8385, R=0.9561, F1=0.8934
+
+Experiment: lr=0.001, base_channels=16, augmentation=False, epochs=20
+  Test Metrics: Acc=0.8526, P=0.8699, R=0.9386, F1=0.9030
+
+Experiment: lr=0.001, base_channels=16, augmentation=True, epochs=20
+  Test Metrics: Acc=0.8333, P=0.8548, R=0.9298, F1=0.8908
+
+Experiment: lr=0.0001, base_channels=8, augmentation=False, epochs=20
+  Test Metrics: Acc=0.7885, P=0.7956, R=0.9561, F1=0.8685
+
+Experiment: lr=0.0001, base_channels=8, augmentation=True, epochs=20
+  Test Metrics: Acc=0.7692, P=0.8000, R=0.9123, F1=0.8525
+
+Experiment: lr=0.0001, base_channels=16, augmentation=False, epochs=20
+  Test Metrics: Acc=0.8462, P=0.8462, R=0.9649, F1=0.9016
+
+Experiment: lr=0.0001, base_channels=16, augmentation=True, epochs=20
+  Test Metrics: Acc=0.8205, P=0.8308, R=0.9474, F1=0.8852

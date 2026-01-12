@@ -67,7 +67,7 @@ def main():
     )
 
     # Task B controls (capacity/augmentation/budget)
-    parser.add_argument("--epochs", type=int, default=20, help="Task B: epochs (training budget)")
+    parser.add_argument("--epochs", type=int, default=40, help="Task B: epochs (training budget)")
     parser.add_argument("--batch_size", type=int, default=64, help="Task B: batch size")
     parser.add_argument("--lr", type=float, default=1e-3, help="Task B: learning rate")
     parser.add_argument("--b_channels", type=int, default=16, help="Task B: base channels")
@@ -91,6 +91,10 @@ def main():
 
     project_root = Path(__file__).resolve().parent
     dataset_root = resolve_dataset_root(project_root)
+    
+    # Define a results directory
+    results_dir = project_root / "Results"
+    results_dir.mkdir(exist_ok=True)
 
     # Resolve augmentation flags (default True if neither provided)
     a_aug = True
@@ -147,6 +151,11 @@ def main():
 
         print("--> Training Model B...")
         model_b.train()
+        
+        # Save training curves
+        curve_path = results_dir / "task_b_training_curves.png"
+        model_b.plot_training_curves(save_path=str(curve_path))
+        
         print("--> Testing Model B...")
         metrics_b = model_b.test()
         _print_metrics("Task B Test:", metrics_b)

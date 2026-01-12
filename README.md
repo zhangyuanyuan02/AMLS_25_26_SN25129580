@@ -97,3 +97,10 @@ The console will show:
 - Task A training and testing
 - Task B training and testing
 - Final test accuracy for both tasks
+
+To test different parameters impacts:
+```bash
+python main.py
+```
+
+The code will test all the parameters of it and export the results as a txt file.

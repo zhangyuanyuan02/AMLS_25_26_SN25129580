@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from typing import Dict, Optional, Tuple, Union
 
+import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -97,6 +98,12 @@ class TaskB:
         self.criterion = nn.BCEWithLogitsLoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.LR)
 
+        # Storage for plotting
+        self.train_losses = []
+        self.train_accuracies = []
+        self.val_losses = []
+        self.val_accuracies = []
+
     # ---------------------- Data ----------------------
     def _should_download(self) -> bool:
         if isinstance(self.download, bool):
@@ -152,6 +159,12 @@ class TaskB:
             download=download_flag,
             root=self.dataset_path,
         )
+        val_dataset = BreastMNIST(
+            split="val",
+            transform=self.get_transforms("test"), # No augmentation for val
+            download=download_flag,
+            root=self.dataset_path,
+        )
         test_dataset = BreastMNIST(
             split="test",
             transform=self.get_transforms("test"),
@@ -164,10 +177,13 @@ class TaskB:
         train_loader = data.DataLoader(
             train_dataset, batch_size=self.BATCH_SIZE, shuffle=True, num_workers=0
         )
+        val_loader = data.DataLoader(
+            val_dataset, batch_size=self.BATCH_SIZE, shuffle=False, num_workers=0
+        )
         test_loader = data.DataLoader(
             test_dataset, batch_size=self.BATCH_SIZE, shuffle=False, num_workers=0
         )
-        return train_loader, test_loader
+        return train_loader, val_loader, test_loader
 
     # ---------------------- Metrics ----------------------
     @staticmethod
@@ -193,11 +209,20 @@ class TaskB:
 
     # ---------------------- Train/Test ----------------------
     def train(self):
-        train_loader, _ = self.load_dataloaders()
+        train_loader, val_loader, _ = self.load_dataloaders()
         self.model.train()
+
+        self.train_losses = []
+        self.train_accuracies = []
+        self.val_losses = []
+        self.val_accuracies = []
 
         for epoch in range(self.EPOCHS):
             running_loss = 0.0
+            correct = 0
+            total = 0
+
+            # Training Phase
             for inputs, targets in train_loader:
                 inputs = inputs.to(self.device)
                 targets = targets.to(self.device).float().view(-1, 1)
@@ -209,9 +234,45 @@ class TaskB:
                 self.optimizer.step()
 
                 running_loss += loss.item() * inputs.size(0)
+                
+                # Track accuracy
+                predicted = (torch.sigmoid(outputs) > 0.5).float()
+                total += targets.size(0)
+                correct += (predicted == targets).sum().item()
 
             avg_loss = running_loss / len(train_loader.dataset)
-            print(f"  Epoch [{epoch+1}/{self.EPOCHS}] Loss: {avg_loss:.4f}")
+            epoch_acc = correct / total if total > 0 else 0.0
+            
+            self.train_losses.append(avg_loss)
+            self.train_accuracies.append(epoch_acc)
+
+            # Validation Phase
+            self.model.eval()
+            val_loss = 0.0
+            val_correct = 0
+            val_total = 0
+            with torch.no_grad():
+                for inputs, targets in val_loader:
+                    inputs = inputs.to(self.device)
+                    targets = targets.to(self.device).float().view(-1, 1)
+                    outputs = self.model(inputs)
+                    loss = self.criterion(outputs, targets)
+                    val_loss += loss.item() * inputs.size(0)
+                    predicted = (torch.sigmoid(outputs) > 0.5).float()
+                    val_total += targets.size(0)
+                    val_correct += (predicted == targets).sum().item()
+            
+            avg_val_loss = val_loss / len(val_loader.dataset)
+            val_acc = val_correct / val_total if val_total > 0 else 0.0
+            
+            self.val_losses.append(avg_val_loss)
+            self.val_accuracies.append(val_acc)
+            
+            self.model.train() # Switch back to train mode
+
+            print(f"  Epoch [{epoch+1}/{self.EPOCHS}] "
+                  f"Train Loss: {avg_loss:.4f} | Train Acc: {epoch_acc:.4f} | "
+                  f"Val Loss: {avg_val_loss:.4f} | Val Acc: {val_acc:.4f}")
 
         # Return train metrics for convenience (on train subset)
         self.model.eval()
@@ -236,8 +297,50 @@ class TaskB:
         )
         return metrics
 
+    def plot_training_curves(self, save_path: Optional[str] = None):
+        """
+        Plots the training and validation loss/accuracy curves.
+        """
+        if not self.train_losses:
+            print("No training history found. Run train() first.")
+            return
+
+        epochs = range(1, len(self.train_losses) + 1)
+        plt.figure(figsize=(12, 5))
+
+        # Plot Loss
+        plt.subplot(1, 2, 1)
+        plt.plot(epochs, self.train_losses, 'b-', label='Train Loss')
+        plt.plot(epochs, self.val_losses, 'g--', label='Val Loss')
+        plt.title('Loss (Train vs Val)')
+        plt.xlabel('Epochs')
+        plt.ylabel('Loss')
+        plt.legend()
+        plt.grid(True)
+
+        # Plot Accuracy
+        plt.subplot(1, 2, 2)
+        plt.plot(epochs, self.train_accuracies, 'r-', label='Train Acc')
+        plt.plot(epochs, self.val_accuracies, 'm--', label='Val Acc')
+        plt.title('Accuracy (Train vs Val)')
+        plt.xlabel('Epochs')
+        plt.ylabel('Accuracy')
+        plt.legend()
+        plt.grid(True)
+
+        plt.tight_layout()
+        
+        if save_path:
+            # Ensure directory exists
+            Path(save_path).parent.mkdir(parents=True, exist_ok=True)
+            plt.savefig(save_path)
+            print(f"Training curves saved to {save_path}")
+            plt.close()
+        else:
+            plt.show()
+
     def test(self):
-        _, test_loader = self.load_dataloaders()
+        _, _, test_loader = self.load_dataloaders()
         self.model.eval()
 
         all_true, all_pred = [], []
