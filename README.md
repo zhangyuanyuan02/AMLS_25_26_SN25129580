@@ -100,7 +100,7 @@ The console will show:
 
 To test different parameters impacts:
 ```bash
-python main.py
+python test.py
 ```
 
 The code will test all the parameters of it and export the results as a txt file.
