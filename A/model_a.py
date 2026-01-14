@@ -184,10 +184,17 @@ class TaskA:
         y_pred = self.model.predict(X_test_processed)
         return self.compute_metrics(y_test, y_pred)
 
+    def validate(self, feature_mode: Optional[str] = None):
+        _, (X_val, y_val), _ = self.load_data()
+
+        X_val_processed = self.preprocess(X_val, is_training=False, feature_mode=feature_mode)
+        y_pred = self.model.predict(X_val_processed)
+        return self.compute_metrics(y_val, y_pred)
+
     def compare_feature_pipelines(self):
         """
         Requirement-oriented helper:
-        trains/evaluates two pipelines and returns their test metrics:
+        trains/evaluates two pipelines and returns their validation metrics:
           - raw: flatten only
           - processed: flatten + standardization
         Note: This re-trains the model for each pipeline.
@@ -199,5 +206,5 @@ class TaskA:
             self.scaler = StandardScaler()
             print(f"\n  [Task A] Training with feature_mode='{mode}'")
             self.train(feature_mode=mode)
-            results[mode] = self.test(feature_mode=mode)
+            results[mode] = self.validate(feature_mode=mode)
         return results

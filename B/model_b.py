@@ -357,3 +357,22 @@ class TaskB:
         y_true = torch.cat(all_true)
         y_pred = torch.cat(all_pred)
         return self.compute_metrics(y_true, y_pred)
+
+    def validate(self):
+        _, val_loader, _ = self.load_dataloaders()
+        self.model.eval()
+
+        all_true, all_pred = [], []
+        with torch.no_grad():
+            for inputs, targets in val_loader:
+                inputs = inputs.to(self.device)
+                targets = targets.to(self.device).float().view(-1)
+                logits = self.model(inputs).view(-1)
+                preds = (torch.sigmoid(logits) > 0.5).int()
+
+                all_true.append(targets.int().cpu())
+                all_pred.append(preds.cpu())
+
+        y_true = torch.cat(all_true)
+        y_pred = torch.cat(all_pred)
+        return self.compute_metrics(y_true, y_pred)

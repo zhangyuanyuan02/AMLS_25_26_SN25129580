@@ -4,65 +4,73 @@ Running Task A Experiments (SVM)
 ==============================
 
 Experiment: C=0.1, feature_mode=raw, augmentation=False
-  Test Metrics: Acc=0.7308, P=0.7308, R=1.0000, F1=0.8444
+  Val Metrics: Acc=0.7308, P=0.7308, R=1.0000, F1=0.8444
 
 Experiment: C=0.1, feature_mode=raw, augmentation=True
-  Test Metrics: Acc=0.7308, P=0.7308, R=1.0000, F1=0.8444
+  Val Metrics: Acc=0.7308, P=0.7308, R=1.0000, F1=0.8444
 
 Experiment: C=0.1, feature_mode=processed, augmentation=False
-  Test Metrics: Acc=0.7308, P=0.7308, R=1.0000, F1=0.8444
+  Val Metrics: Acc=0.7308, P=0.7308, R=1.0000, F1=0.8444
 
 Experiment: C=0.1, feature_mode=processed, augmentation=True
-  Test Metrics: Acc=0.7436, P=0.7403, R=1.0000, F1=0.8507
+  Val Metrics: Acc=0.7308, P=0.7308, R=1.0000, F1=0.8444
 
 Experiment: C=1.0, feature_mode=raw, augmentation=False
-  Test Metrics: Acc=0.7949, P=0.7847, R=0.9912, F1=0.8760
+  Val Metrics: Acc=0.8205, P=0.8116, R=0.9825, F1=0.8889
 
 Experiment: C=1.0, feature_mode=raw, augmentation=True
-  Test Metrics: Acc=0.7949, P=0.7929, R=0.9737, F1=0.8740
+  Val Metrics: Acc=0.8590, P=0.8485, R=0.9825, F1=0.9106
 
 Experiment: C=1.0, feature_mode=processed, augmentation=False
-  Test Metrics: Acc=0.7949, P=0.7847, R=0.9912, F1=0.8760
+  Val Metrics: Acc=0.8205, P=0.8116, R=0.9825, F1=0.8889
 
 Experiment: C=1.0, feature_mode=processed, augmentation=True
-  Test Metrics: Acc=0.7885, P=0.7956, R=0.9561, F1=0.8685
+  Val Metrics: Acc=0.8462, P=0.8571, R=0.9474, F1=0.9000
 
 Experiment: C=10.0, feature_mode=raw, augmentation=False
-  Test Metrics: Acc=0.7949, P=0.8475, R=0.8772, F1=0.8621
+  Val Metrics: Acc=0.8590, P=0.8710, R=0.9474, F1=0.9076
 
 Experiment: C=10.0, feature_mode=raw, augmentation=True
-  Test Metrics: Acc=0.7628, P=0.8291, R=0.8509, F1=0.8398
+  Val Metrics: Acc=0.8077, P=0.8621, R=0.8772, F1=0.8696
 
 Experiment: C=10.0, feature_mode=processed, augmentation=False
-  Test Metrics: Acc=0.7756, P=0.8319, R=0.8684, F1=0.8498
+  Val Metrics: Acc=0.8718, P=0.8852, R=0.9474, F1=0.9153
 
 Experiment: C=10.0, feature_mode=processed, augmentation=True
-  Test Metrics: Acc=0.7628, P=0.8182, R=0.8684, F1=0.8426
+  Val Metrics: Acc=0.8333, P=0.8548, R=0.9298, F1=0.8908
+
+Best Task A config by val F1: C=10.0, feature_mode=processed, augmentation=False
+  Best Val Metrics: Acc=0.8718, P=0.8852, R=0.9474, F1=0.9153
+  Final Test Metrics: Acc=0.7756, P=0.8319, R=0.8684, F1=0.8498
 
 ==============================
 Running Task B Experiments (CNN)
 ==============================
 
 Experiment: lr=0.001, base_channels=8, augmentation=False, epochs=20
-  Test Metrics: Acc=0.8782, P=0.8800, R=0.9649, F1=0.9205
+  Val Metrics: Acc=0.8590, P=0.8710, R=0.9474, F1=0.9076
 
 Experiment: lr=0.001, base_channels=8, augmentation=True, epochs=20
-  Test Metrics: Acc=0.8333, P=0.8385, R=0.9561, F1=0.8934
+  Val Metrics: Acc=0.8590, P=0.8382, R=1.0000, F1=0.9120
 
 Experiment: lr=0.001, base_channels=16, augmentation=False, epochs=20
-  Test Metrics: Acc=0.8526, P=0.8699, R=0.9386, F1=0.9030
+  Val Metrics: Acc=0.8462, P=0.8689, R=0.9298, F1=0.8983
 
 Experiment: lr=0.001, base_channels=16, augmentation=True, epochs=20
-  Test Metrics: Acc=0.8333, P=0.8548, R=0.9298, F1=0.8908
+  Val Metrics: Acc=0.8846, P=0.8750, R=0.9825, F1=0.9256
 
 Experiment: lr=0.0001, base_channels=8, augmentation=False, epochs=20
-  Test Metrics: Acc=0.7885, P=0.7956, R=0.9561, F1=0.8685
+  Val Metrics: Acc=0.7821, P=0.7703, R=1.0000, F1=0.8702
 
 Experiment: lr=0.0001, base_channels=8, augmentation=True, epochs=20
-  Test Metrics: Acc=0.7692, P=0.8000, R=0.9123, F1=0.8525
+  Val Metrics: Acc=0.8077, P=0.7917, R=1.0000, F1=0.8837
 
 Experiment: lr=0.0001, base_channels=16, augmentation=False, epochs=20
-  Test Metrics: Acc=0.8462, P=0.8462, R=0.9649, F1=0.9016
+  Val Metrics: Acc=0.8590, P=0.8594, R=0.9649, F1=0.9091
 
 Experiment: lr=0.0001, base_channels=16, augmentation=True, epochs=20
-  Test Metrics: Acc=0.8205, P=0.8308, R=0.9474, F1=0.8852
+  Val Metrics: Acc=0.8590, P=0.8485, R=0.9825, F1=0.9106
+
+Best Task B config by val F1: lr=0.001, base_channels=16, augmentation=True, epochs=20
+  Best Val Metrics: Acc=0.8846, P=0.8750, R=0.9825, F1=0.9256
+  Final Test Metrics: Acc=0.8013, P=0.8268, R=0.9211, F1=0.8714

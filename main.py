@@ -1,5 +1,9 @@
 import argparse
+import random
 from pathlib import Path
+
+import numpy as np
+import torch
 
 from A.model_a import TaskA
 from B.model_b import TaskB
@@ -41,6 +45,25 @@ def _print_metrics(prefix: str, metrics: dict):
         f"R={metrics['recall']:.4f}, "
         f"F1={metrics['f1']:.4f}"
     )
+
+
+def _select_best_by_metric(results: dict, metric: str = "f1") -> str:
+    if not results:
+        raise ValueError("Empty results; cannot select best model.")
+    if metric not in {"accuracy", "precision", "recall", "f1"}:
+        raise ValueError("metric must be one of: accuracy/precision/recall/f1")
+    return max(results.keys(), key=lambda k: results[k][metric])
+
+
+def set_global_seed(seed: int):
+    seed = int(seed)
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 
 def main():
@@ -86,8 +109,11 @@ def main():
         action="store_true",
         help="Task A only: compare raw vs processed features (re-trains twice)",
     )
+    parser.add_argument("--seed", type=int, default=25129580, help="Global random seed")
 
     args = parser.parse_args()
+
+    set_global_seed(args.seed)
 
     project_root = Path(__file__).resolve().parent
     dataset_root = resolve_dataset_root(project_root)
@@ -121,16 +147,39 @@ def main():
             feature_mode=args.a_feature,
             train_budget=args.a_budget,
             download=args.download,
+            random_state=args.seed,
         )
 
         if args.compare_features:
             results = model_a.compare_feature_pipelines()
             for mode, metrics in results.items():
-                _print_metrics(f"Task A Test ({mode}):", metrics)
+                _print_metrics(f"Task A Val ({mode}):", metrics)
+
+            best_mode = _select_best_by_metric(results, metric="f1")
+            print(f"--> Best feature_mode by val F1: {best_mode}")
+
+            model_a = TaskA(
+                dataset_path=str(dataset_root),
+                svm_C=args.svm_C,
+                svm_gamma=args.svm_gamma,
+                use_augmentation=a_aug,
+                feature_mode=best_mode,
+                train_budget=args.a_budget,
+                download=args.download,
+                random_state=args.seed,
+            )
+            print("--> Training Model A with best feature_mode...")
+            model_a.train()
+            print("--> Testing Model A (final report)...")
+            metrics_a = model_a.test()
+            _print_metrics("Task A Test:", metrics_a)
         else:
             print("--> Training Model A...")
             model_a.train()
-            print("--> Testing Model A...")
+            print("--> Validating Model A...")
+            metrics_a_val = model_a.validate()
+            _print_metrics("Task A Val:", metrics_a_val)
+            print("--> Testing Model A (final report)...")
             metrics_a = model_a.test()
             _print_metrics("Task A Test:", metrics_a)
 
@@ -147,6 +196,7 @@ def main():
             base_channels=args.b_channels,
             train_budget=args.b_budget,
             download=args.download,
+            seed=args.seed,
         )
 
         print("--> Training Model B...")
@@ -156,7 +206,11 @@ def main():
         curve_path = results_dir / "task_b_training_curves.png"
         model_b.plot_training_curves(save_path=str(curve_path))
         
-        print("--> Testing Model B...")
+        print("--> Validating Model B...")
+        metrics_b_val = model_b.validate()
+        _print_metrics("Task B Val:", metrics_b_val)
+
+        print("--> Testing Model B (final report)...")
         metrics_b = model_b.test()
         _print_metrics("Task B Test:", metrics_b)
 

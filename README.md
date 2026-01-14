@@ -5,7 +5,7 @@ This project implements **two models** for the **BreastMNIST** dataset:
 - **Task A (Classical ML):** feature preprocessing + a classical classifier(SVM) (see `A/model_a.py`)
 - **Task B (Deep Learning):** a CNN trained with PyTorch (see `B/model_b.py`)
 
-Run everything from the project root with:
+Run train and test from the project root with:
 
 ```bash
 python main.py
@@ -100,7 +100,7 @@ The console will show:
 
 To test different parameters impacts:
 ```bash
-python test.py
+python test_sweep.py
 ```
 
 The code will test all the parameters of it and export the results as a txt file.
