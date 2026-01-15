@@ -8,7 +8,6 @@ import itertools
 import numpy as np
 import torch
 
-# Add current directory to sys.path to ensure imports work
 sys.path.append(str(Path(__file__).resolve().parent))
 
 from A.model_a import TaskA
@@ -131,7 +130,7 @@ def run_task_b_experiments(dataset_path, results_file, seed: int):
     lrs = [1e-3, 1e-4]
     base_channels_list = [8, 16]
     augmentations = [False, True]
-    epochs = 20 # Reduced epochs for quick testing, can be increased
+    epochs = 20 # Reduced epochs for quick testing default is 40
     
     best_key = None
     best_metrics = None
